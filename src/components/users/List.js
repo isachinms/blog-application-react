@@ -3,6 +3,8 @@ import axios from '../../config/axios'
 import { Link } from 'react-router-dom'
 
 class ListUsers extends React.Component {
+    _isMounted = false
+
     constructor() {
         super()
         this.state = {
@@ -11,15 +13,23 @@ class ListUsers extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         axios.get('/users')
             .then((response) => {
                 const users = response.data
                 // console.log(users)
-                this.setState({ users })
+                if(this._isMounted) {
+                    this.setState({ users })
+                }
             })
             .catch((err) => {
                 console.log(err)
             })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+        console.log('component is unmounting')
     }
 
     render() {
